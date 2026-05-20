@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sustainable Food Security: Aquaculture Derivatives Simulator</title>
+    <!-- Tailwind CSS CDN for modern structural styling -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- Chart.js CDN for interactive visualizations -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- LaTeX rendering fallback using Katex if needed, but styling here uses native MathML/CSS -->
+    <style>
+        .math-block { font-family: 'Cambria Math', 'Times New Roman', serif; font-style: italic; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col justify-between antialiased">
+
+    <!-- Header Banner -->
+    <header class="bg-emerald-800 text-white shadow-md py-6 px-4 md:px-8">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <div>
+                <span class="bg-emerald-600 text-xs font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full text-emerald-100">
+                    BSc Food Security (SFM) — Calculus Core Application
+                </span>
+                <h1 class="text-2xl md:text-3xl font-bold mt-1">Modeling Red Tilapia Mass &amp; Growth Kinetics</h1>
+                <p class="text-emerald-200 text-sm mt-1">Analyzing Instantaneous Rates of Change $f'(x)$ in Floating Hapa Systems (Kenyir Lake, Terengganu)</p>
+            </div>
+            <div class="bg-emerald-900/50 backdrop-blur border border-emerald-700/60 p-3 rounded-lg text-xs max-w-xs">
+                <strong>Data Provenance:</strong> Contextualized using baseline kinetics from UPM Pertanika Journal of Tropical Agricultural Science (Ismail &amp; Mohamad, 2025).
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Grid -->
+    <main class="max-w-6xl mx-auto w-full p-4 md:p-8 flex-grow grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- Left Column: Problem Statement & Mathematical Equations -->
+        <section class="lg:col-span-5 flex flex-col gap-5">
+            
+            <!-- Bioscience Context -->
+            <div class="bg-white rounded-xl shadow-sm p-5 border border-slate-200">
+                <h2 class="text-lg font-bold text-emerald-900 mb-2 flex items-center gap-2">
+                    <span>🐟</span> The Bioscience Problem
+                </h2>
+                <p class="text-sm text-slate-600 leading-relaxed">
+                    Under Malaysia's national strategy to guarantee animal protein self-sufficiency, maximizing aquaculture efficiency is vital. Traditional farmers monitor average weight over time, but assessing <strong>food conversion optimization</strong> requires knowing the exact speed of growth at any given moment. 
+                </p>
+                <div class="mt-3 bg-slate-50 p-3 rounded border-l-4 border-emerald-600 text-xs text-slate-600">
+                    <strong>Why Derivatives Matter:</strong> The derivative $f'(x)$ reveals the precise time when growth velocity peaks (the inflection point). Identifying this exact period lets farm managers transition precisely to higher-protein nutritional feeds to maximize yield.
+                </div>
+            </div>
+
+            <!-- Mathematical Modeling Equations -->
+            <div class="bg-white rounded-xl shadow-sm p-5 border border-slate-200">
+                <h2 class="text-lg font-bold text-emerald-900 mb-3 flex items-center gap-2">
+                    <span>🧮</span> Mathematical Formulation
+                </h2>
+                
+                <!-- Function Formula -->
+                <div class="mb-4">
+                    <span class="text-xs font-bold text-slate-500 uppercase tracking-wide block">Gompertz Growth Function $f(x)$</span>
+                    <div class="bg-slate-50 border border-slate-100 p-3 rounded mt-1 text-center font-mono text-emerald-800 text-sm math-block">
+                        f(x) = 650 &middot; e<sup>-5.2 &middot; e<sup>-0.28x</sup></sup>
+                    </div>
+                    <p class="text-xs text-slate-500 mt-1">
+                        Where $x$ is time in weeks, and $f(x)$ represents individual fish weight in grams. Target market size is roughly 500-600g.
+                    </p>
+                </div>
+
+                <!-- Derivative Formula -->
+                <div>
+                    <span class="text-xs font-bold text-slate-500 uppercase tracking-wide block">First Derivative $f'(x)$ (Instantaneous Rate)</span>
+                    <div class="bg-slate-50 border border-slate-100 p-3 rounded mt-1 text-center font-mono text-emerald-800 text-sm math-block">
+                        f'(x) = 650 &middot; 5.2 &middot; 0.28 &middot; e<sup>-5.2 &middot; e<sup>-0.28x</sup></sup> &middot; e<sup>-0.28x</sup>
+                    </div>
+                    <p class="text-xs text-slate-500 mt-1">
+                        Computed via the Chain Rule. $f'(x)$ measures the instantaneous growth velocity in <strong>grams per week</strong>.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Dynamic Readout Box (Populated on click) -->
+            <div id="readout-card" class="bg-gradient-to-br from-slate-800 to-slate-900 text-white rounded-xl shadow-md p-5 transition-all duration-300 transform scale-100 opacity-90">
+                <h3 class="text-xs font-bold text-emerald-400 uppercase tracking-wider mb-1">Interactive Derivative Analysis</h3>
+                <div id="readout-prompt" class="text-sm text-slate-300 italic py-4 text-center">
+                    Click anywhere inside the chart region to isolate a specific week and evaluate its biological growth derivative.
+                </div>
+                <div id="readout-content" class="hidden">
+                    <div class="flex justify-between items-baseline border-b border-slate-700 pb-2 mb-3">
+                        <span id="readout-week" class="text-xl font-bold">Week 0</span>
+                        <span class="text-xs text-slate-400">Culture Metrics</span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4 text-center mb-3">
+                        <div class="bg-slate-800/80 p-2 rounded border border-slate-700">
+                            <span class="block text-xs text-slate-400">Biomass $f(x)$</span>
+                            <span id="val-fx" class="text-lg font-bold text-emerald-300">0.0g</span>
+                        </div>
+                        <div class="bg-slate-800/80 p-2 rounded border border-slate-700">
+                            <span class="block text-xs text-slate-400">Velocity $f'(x)$</span>
+                            <span id="val-dfx" class="text-lg font-bold text-amber-300">0.0 g/wk</span>
+                        </div>
+                    </div>
+                    <div class="bg-slate-900/50 p-2.5 rounded border-l-2 border-amber-400 text-xs leading-relaxed text-slate-200">
+                        <strong>Layman Interpretation:</strong> <span id="layman-text">Select a point.</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Right Column: Interactive Graph Canvas -->
+        <section class="lg:col-span-7 bg-white rounded-xl shadow-sm p-4 md:p-6 border border-slate-200 flex flex-col justify-between">
+            <div>
+                <div class="flex justify-between items-center mb-4">
+                    <div>
+                        <h2 class="text-lg font-bold text-slate-900">Aquaculture Lifecycle Analysis Curve</h2>
+                        <p class="text-xs text-slate-500">Dual-axis interactive map showing total weight vs weekly acceleration velocity.</p>
+                    </div>
+                    <div class="flex gap-4 text-xs font-semibold">
+                        <span class="flex items-center gap-1.5 text-emerald-600">
+                            <span class="w-3 h-3 bg-emerald-600 rounded-sm inline-block"></span> Weight
+                        </span>
+                        <span class="flex items-center gap-1.5 text-amber-500">
+                            <span class="w-3 h-3 bg-amber-500 rounded-sm inline-block"></span> Derivative Rate
+                        </span>
+                    </div>
+                </div>
+                
+                <!-- Chart Container -->
+                <div class="relative w-full h-[320px] md:h-[400px]">
+                    <canvas id="kineticsChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Chart Instructions / Metadata Footnote -->
+            <div class="mt-4 pt-3 border-t border-slate-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 text-xs text-slate-400">
+                <p>💡 Hover over points to view coordinates; tap down anywhere to map derivatives.</p>
+                <p>Simulation Horizon: 0 to 16 Weeks</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer Structure -->
+    <footer class="bg-slate-900 text-slate-400 text-center py-4 px-4 text-xs border-t border-slate-800">
+        <p>© 2026 Malaysia Food Security Analytics Initiative — SFM Bioscience Sandbox Module</p>
+    </footer>
+
+    <!-- Execution Script Containing Simulation & Logic Functions -->
+    <script>
+        // Model Parameters (Gompertz Equation variables optimized for Red Tilapia parameters)
+        const a = 650;  // Asymptotic maximum structural weight (grams)
+        const b = 5.2;  // Displacement factor (related to initial hatch weight)
+        const c = 0.28; // Intrinsic growth rate coefficient per week
+
+        // Mathematical Function Definitions
+        function f(x) {
+            return a * Math.exp(-b * Math.exp(-c * x));
+        }
+
+        function f_prime(x) {
+            const innerGompertz = Math.exp(-c * x);
+            return a * b * c * Math.exp(-b * innerGompertz) * innerGompertz;
+        }
+
+        // Generate Dataset Array Arrays across culture lifecycle timeline
+        const weeksArray = Array.from({length: 33}, (_, i) => i * 0.5); // Increments of 0.5 weeks for curve smoothing
+        const weightData = weeksArray.map(w => f(w));
+        const derivativeData = weeksArray.map(w => f_prime(w));
+
+        // Initialization Logic for Chart.js Architecture
+        const ctx = document.getElementById('kineticsChart').getContext('2d');
+        const kineticsChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: weeksArray,
+                datasets: [
+                    {
+                        label: 'Fish Mass f(x)',
+                        data: weightData,
+                        borderColor: '#059669', // Emerald 600
+                        backgroundColor: 'rgba(5, 150, 105, 0.05)',
+                        borderWidth: 3,
+                        pointRadius: 1,
+                        pointHoverRadius: 6,
+                        yAxisID: 'yWeight',
+                        fill: true,
+                        tension: 0.2
+                    },
+                    {
+                        label: 'Growth Rate f\'(x)',
+                        data: derivativeData,
+                        borderColor: '#f59e0b', // Amber 500
+                        borderDash: [5, 5],
+                        borderWidth: 2,
+                        pointRadius: 1,
+                        pointHoverRadius: 6,
+                        yAxisID: 'yDerivative',
+                        tension: 0.2
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Culture Duration Timeline (Weeks Since Stocking)',
+                            color: '#475569',
+                            font: { weight: 'bold', size: 11 }
+                        },
+                        grid: { color: '#f1f5f9' }
+                    },
+                    yWeight: {
+                        type: 'linear',
+                        position: 'left',
+                        title: {
+                            display: true,
+                            text: 'Individual Fish Mass (Grams)',
+                            color: '#059669',
+                            font: { weight: 'bold', size: 11 }
+                        },
+                        min: 0,
+                        max: 700,
+                        grid: { color: '#f1f5f9' }
+                    },
+                    yDerivative: {
+                        type: 'linear',
+                        position: 'right',
+                        title: {
+                            display: true,
+                            text: 'Instantaneous Growth Velocity (g / Week)',
+                            color: '#f59e0b',
+                            font: { weight: 'bold', size: 11 }
+                        },
+                        min: 0,
+                        max: 75,
+                        grid: { drawOnChartArea: false } // Avoid grid cluttering lines
+                    }
+                },
+                plugins: {
+                    legend: { display: false }, // Custom legend used in UI structure
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                        backgroundColor: 'rgba(15, 23, 42, 0.9)'
+                    }
+                },
+                // Capture element clicks to update the derivative cards dynamically
+                onClick: (e) => {
+                    const points = kineticsChart.getElementsAtEventForMode(e, 'nearest', { intersect: false }, true);
+                    if (points.length > 0) {
+                        const index = points[0].index;
+                        const selectedWeek = weeksArray[index];
+                        updateDerivativeReadout(selectedWeek);
+                    }
+                }
+            }
+        });
+
+        // Compute and translate specific derivative states into plain-language management strategies
+        function updateDerivativeReadout(week) {
+            const fx = f(week);
+            const dfx = f_prime(week);
+
+            // Interface DOM element pointers
+            const promptBox = document.getElementById('readout-prompt');
+            const contentBox = document.getElementById('readout-content');
+            const cardElement = document.getElementById('readout-card');
+
+            document.getElementById('readout-week').innerText = `Week ${week.toFixed(1)}`;
+            document.getElementById('val-fx').innerText = `${fx.toFixed(1)}g`;
+            document.getElementById('val-dfx').innerText = `${dfx.toFixed(2)} g/wk`;
+
+            // Layman Interpretation Engine (Evaluating behavior by isolating biological thresholds)
+            let laymanDescription = "";
+            if (week < 3.0) {
+                laymanDescription = `Lag phase. The young tilapia fry are adjusting to the Kenyir Lake environment. Growth is slow (${dfx.toFixed(1)}g per week) because the biomass foundation is small. Feed standard metabolic maintenance rations.`;
+            } else if (week >= 3.0 && week < 6.0) {
+                laymanDescription = `Acceleration phase. Total fish mass is compounding rapidly. Growth velocity is rocketing forward by an additional ${dfx.toFixed(1)}g each week. Maximize protein availability in the water column immediately.`;
+            } else if (week >= 6.0 && week <= 7.0) {
+                laymanDescription = `Inflection point reached (Peak Velocity at ~Week 5.9)! The derivative is at its maximum absolute value (~67g/week). The fish are adding bulk at the fastest rate possible in their entire life cycle. Feed efficiency is optimized.`;
+            } else if (week > 7.0 && week < 12.0) {
+                laymanDescription = `Deceleration phase. Total weight increases to ${fx.toFixed(0)}g, but growth velocity slows down to ${dfx.toFixed(1)}g per week. The tilapia are shifting biological energy from building muscle frame to sexual maturation.`;
+            } else {
+                laymanDescription = `Asymptotic stabilization plateau. Growth rate has trickled down below 15g/week. Keeping the fish past this point increases food expenses without adding yield. Plan your harvest logistics immediately for local market distribution.`;
+            }
+
+            document.getElementById('layman-text').innerText = laymanDescription;
+
+            // Trigger smooth visibility change transitions
+            promptBox.classList.add('hidden');
+            contentBox.classList.remove('hidden');
+            cardElement.classList.remove('from-slate-800', 'to-slate-900');
+            cardElement.classList.add('from-emerald-950', 'to-slate-900');
+        }
+    </script>
+</body>
+</html>
